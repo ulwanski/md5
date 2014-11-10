@@ -158,12 +158,15 @@ void MD5_Update(MD5_CTX *ctx, const void *data, unsigned long size){
 	unsigned long used, free;
  
 	saved_lo = ctx->lo;
-	if ((ctx->lo = (saved_lo + size) & 0x1fffffff) < saved_lo) ctx->hi++;
+	if ((ctx->lo = (saved_lo + size) & 0x1fffffff) < saved_lo)
+		ctx->hi++;
 	ctx->hi += size >> 29;
+ 
 	used = saved_lo & 0x3f;
  
 	if (used){
 		free = 64 - used;
+ 
 		if (size < free) {
 			memcpy(&ctx->buffer[used], data, size);
 			return;
@@ -237,6 +240,14 @@ void MD5_Final(unsigned char *result, MD5_CTX *ctx){
 
 using namespace std;
 
+/* Return Calculated raw result(always little-endian), the size is always 16 */
+void md5bin(const void* dat, size_t len, unsigned char out[16]) {
+    MD5_CTX c;
+    MD5_Init(&c);
+    MD5_Update(&c, dat, len);
+    MD5_Final(out, &c);
+}
+
 static char hb2hex(unsigned char hb) {
     hb = hb & 0xF;
     return hb < 10 ? '0' + hb : hb - 10 + 'a';
@@ -244,20 +255,29 @@ static char hb2hex(unsigned char hb) {
 
 string md5file(const char* filename){
 	std::FILE* file = std::fopen(filename, "rb");
+	string res = md5file(file);
+	std::fclose(file);
+	return res;
+}
 
-	std::fseek(file, 0L, SEEK_END);
-    long int len = std::ftell(file);
-    std::fseek(file, 0L, SEEK_SET);
+string md5file(std::FILE* file){
+
+	MD5_CTX c;
+    MD5_Init(&c);
+
+	char buff[BUFSIZ];
+	unsigned char out[16];
+	size_t len = 0;
+	while( ( len = std::fread(buff ,sizeof(char), BUFSIZ, file) ) > 0) {
+		MD5_Update(&c, buff, len);
+	}
+	MD5_Final(out, &c);
 
 	string res;
-    unsigned char out[16];
-    md5bin(dat, len, out);
-    for(size_t i = 0; i < 16; ++ i) {
+	for(size_t i = 0; i < 16; ++ i) {
         res.push_back(hb2hex(out[i] >> 4));
         res.push_back(hb2hex(out[i]));
     }
-
-	std::fclose(file);
 	return res;
 }
 
@@ -272,14 +292,12 @@ string md5sum(const void* dat, size_t len) {
     return res;
 }
 
-void md5bin(const void* dat, size_t len, unsigned char out[16]) {
-    MD5_CTX c;
-    MD5_Init(&c);
-    MD5_Update(&c, dat, len);
-    MD5_Final(out, &c);
+std::string md5sum(std::string dat){
+	return md5sum(dat.c_str(), dat.length());
 }
 
-string md5sum6(const void* dat, size_t len) {
+/* Generate shorter md5sum by something like base62 instead of base16 or base10. 0~61 are represented by 0-9a-zA-Z */
+string md5sum6(const void* dat, size_t len){
     static const char* tbl = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
     string res;
     unsigned char out[16];
@@ -288,4 +306,8 @@ string md5sum6(const void* dat, size_t len) {
         res.push_back(tbl[out[i] % 62]);
     }
     return res;
+}
+
+std::string md5sum6(std::string dat){
+	return md5sum6(dat.c_str(), dat.length() );
 }
