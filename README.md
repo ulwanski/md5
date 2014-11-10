@@ -12,7 +12,7 @@ Class to create MD5 checksum from file or string
 int main(int argc,char** argv){
 
   char cstring[] = "Foo baz, testing.";
-  std::string str = "cstring;
+  std::string str = cstring;
 
   /* MD5 from std::string */
   printf("md5sum: %s\n",  md5sum(  str ).c_str());
