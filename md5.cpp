@@ -158,15 +158,12 @@ void MD5_Update(MD5_CTX *ctx, const void *data, unsigned long size){
 	unsigned long used, free;
  
 	saved_lo = ctx->lo;
-	if ((ctx->lo = (saved_lo + size) & 0x1fffffff) < saved_lo)
-		ctx->hi++;
+	if ((ctx->lo = (saved_lo + size) & 0x1fffffff) < saved_lo) ctx->hi++;
 	ctx->hi += size >> 29;
- 
 	used = saved_lo & 0x3f;
  
 	if (used){
 		free = 64 - used;
- 
 		if (size < free) {
 			memcpy(&ctx->buffer[used], data, size);
 			return;
@@ -243,6 +240,25 @@ using namespace std;
 static char hb2hex(unsigned char hb) {
     hb = hb & 0xF;
     return hb < 10 ? '0' + hb : hb - 10 + 'a';
+}
+
+string md5file(const char* filename){
+	std::FILE* file = std::fopen(filename, "rb");
+
+	std::fseek(file, 0L, SEEK_END);
+    long int len = std::ftell(file);
+    std::fseek(file, 0L, SEEK_SET);
+
+	string res;
+    unsigned char out[16];
+    md5bin(dat, len, out);
+    for(size_t i = 0; i < 16; ++ i) {
+        res.push_back(hb2hex(out[i] >> 4));
+        res.push_back(hb2hex(out[i]));
+    }
+
+	std::fclose(file);
+	return res;
 }
 
 string md5sum(const void* dat, size_t len) {
