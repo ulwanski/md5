@@ -20,14 +20,14 @@ int main(int argc,char** argv){
   /* MD5 from c-string */
   printf("md5sum: %s\n",  md5sum(  cstring ).c_str());
   
-  /* MD5 from filename */
-  printf("md5file: %s\n", md5file("README.md").c_str());
-  
   /* Short MD5 from c-string */
   printf("md5sum6: %s\n", md5sum6( cstring ).c_str());
   
   /* Short MD5 from std::string */
   printf("md5sum6: %s\n", md5sum6( str ).c_str());
+  
+  /* MD5 from filename */
+  printf("md5file: %s\n", md5file("README.md").c_str());
   
   /* MD5 from opened file */
   std::FILE* file = std::fopen("README.md", "rb");
