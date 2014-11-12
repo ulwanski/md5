@@ -271,7 +271,7 @@ string md5file(std::FILE* file){
 	return res;
 }
 
-string md5sum(const void* dat, size_t len) {
+string md5(const void* dat, size_t len) {
     string res;
     unsigned char out[16];
     md5bin(dat, len, out);
@@ -282,8 +282,8 @@ string md5sum(const void* dat, size_t len) {
     return res;
 }
 
-std::string md5sum(std::string dat){
-	return md5sum(dat.c_str(), dat.length());
+std::string md5(std::string dat){
+	return md5(dat.c_str(), dat.length());
 }
 
 /* Generate shorter md5sum by something like base62 instead of base16 or base10. 0~61 are represented by 0-9a-zA-Z */
