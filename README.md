@@ -15,10 +15,10 @@ int main(int argc,char** argv){
   std::string str = cstring;
 
   /* MD5 from std::string */
-  printf("md5sum: %s\n",  md5sum(  str ).c_str());
+  printf("md5sum: %s\n",  md5(  str ).c_str());
   
   /* MD5 from c-string */
-  printf("md5sum: %s\n",  md5sum(  cstring ).c_str());
+  printf("md5sum: %s\n",  md5(  cstring ).c_str());
   
   /* Short MD5 from c-string */
   printf("md5sum6: %s\n", md5sum6( cstring ).c_str());
