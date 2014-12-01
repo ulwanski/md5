@@ -4,6 +4,7 @@
 #define _CRT_SECURE_NO_WARNINGS
 
 #include <string>
+#include <cstring>
 
 std::string md5(std::string dat);
 std::string md5(const void* dat, size_t len);
