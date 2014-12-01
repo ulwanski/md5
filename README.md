@@ -39,3 +39,7 @@ int main(int argc,char** argv){
 }
 
 ```
+
+<b>Compilation in g++</b>
+
+<i>g++ -std=c++0x -o md5 md5.cpp main.cpp</i>
