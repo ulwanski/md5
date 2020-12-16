@@ -245,6 +245,10 @@ static char hb2hex(unsigned char hb) {
 
 string md5file(const char* filename){
 	std::FILE* file = std::fopen(filename, "rb");
+	
+	if(NULL == file)
+		return "";
+
 	string res = md5file(file);
 	std::fclose(file);
 	return res;
